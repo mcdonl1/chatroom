@@ -1,10 +1,10 @@
 import "./App.css";
 import React, { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
-
+import { config } from "./Constants";
 import Home from "./routes/Home";
 
-const socket = io("ws://192.168.2.13:5000");
+const socket = io(config.url.SOCKET_URL);
 
 function App() {
 
