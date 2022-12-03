@@ -3,8 +3,21 @@ import React, { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { config } from "./Constants";
 import Home from "./routes/Home";
+import Modal from "react-modal";
 
 const socket = io(config.url.SOCKET_URL);
+
+const loginModalStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+  },
+};
+
 
 function App() {
 
@@ -20,8 +33,8 @@ function App() {
     socket.on('connect', () => {
       setIsConnected(true);
       const name = names[Math.floor(Math.random() * names.length)];
-      socket.emit("login", { name: name });
-      setLocalUser({ name: name });
+      socket.emit("login", { name: "anonymous" });
+      setLocalUser({ name: "anonymous" });
     });
 
     socket.on('users', users => setUsers(users));
@@ -54,11 +67,33 @@ function App() {
     //   return newMsgs;
     // });
   }
+
+  const enterListener = event => {
+    if (event.key === "Enter") {
+      const btn = document.getElementById("login-btn");
+      btn.click();
+    }
+  }
+
   return (
     <div className="App">
       <header className="App-header">
         <h3>Chatty Chat</h3>
       </header>
+      <Modal
+        isOpen={true}
+        style={loginModalStyles}
+        onAfterOpen={() => {
+          document.addEventListener("keydown", enterListener);
+        }}
+        onAfterClose={() => {
+          document.removeEventListener("keydown", enterListener);
+        }}
+      >
+        Pls enter you username
+        <input />
+        <button id="login-btn">Login</button>
+      </Modal>
       <div className="App-body">
         <Home sendMsg={sendMsg} user={localUser} messages={msgs} />
       </div>

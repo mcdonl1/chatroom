@@ -4,7 +4,7 @@ const { createServer } = require("http");
 const { Server } = require("socket.io");
 const { SocketAddress } = require("net");
 
-const corsOrigins = ["http://localhost:3000", "http://192.168.2.13:3000/", "http://192.168.2.13:5000/"];
+const corsOrigins = ["http://localhost:3000"];
 var corsOptions = {
   origins: corsOrigins,
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
