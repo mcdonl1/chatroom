@@ -1,18 +1,14 @@
-//  const prod = {
-//     url: {
-//         SOCKET_URL: "ws://192.168.2.13:5000"
-//     }
-//  }
-//  const dev = {
-//     url: {
-//         SOCKET_URL: "ws://localhost:5000"
-//     }
-//  }
-
-// export const config = process.env.NODE_ENV === "development" ? dev : prod;
-
-export const config = {
+let config = {
   url: {
-    SOCKET_URL: `ws://${process.env.REACT_APP_SERVER_URL}`,
+    SOCKET_URL: "",
   },
 };
+
+if (process.env.NODE_ENV === "production") {
+  const SERVER_DATA = window.SERVER_DATA;
+  config.url.SOCKET_URL = `ws://${SERVER_DATA.SERVER_URL}`;
+} else {
+  config.url.SOCKET_URL = "ws://localhost:5000";
+}
+
+export { config };
