@@ -5,6 +5,17 @@ const { Server } = require("socket.io");
 const { SocketAddress } = require("net");
 const { readFile, writeFile } = require("fs");
 
+readFile("./.config.json", (err, res) => {
+  let SERVER_DATA = res.toString();
+  readFile("./public/index.html", (err, res) => {
+    let newContents = res.toString().replace("__SERVER_DATA__", SERVER_DATA);
+    writeFile("./public/index.html", newContents, (err, data) => {
+      if (err) console.log(err);
+    });
+    app.use(express.static("./public"));
+  });
+});
+
 const corsOrigins = ["http://localhost:3000"];
 var corsOptions = {
   origins: corsOrigins,
@@ -15,7 +26,7 @@ const app = express();
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
-  serveClient: true,
+  serveClient: false,
   cors: {
     origins: corsOrigins,
   },
@@ -24,17 +35,6 @@ const io = new Server(httpServer, {
 const port = process.env.PORT || 5000;
 let SERVER_DATA = {};
 app.use(cors());
-readFile("./.config.json", (err, res) => {
-  let SERVER_DATA = res.toString();
-  readFile("./public/index.html", (err, res) => {
-    let newContents = res.toString().replace("__SERVER_DATA__", SERVER_DATA);
-    console.log(newContents);
-    writeFile("./public/index.html", newContents, (err, data) => {
-      if (err) console.log(err);
-    });
-    app.use(express.static("./public"));
-  });
-});
 
 // This displays message that the server running and listening to specified port
 httpServer.listen(port, () => console.log(`Listening on port ${port}`));
@@ -58,7 +58,6 @@ io.on("connection", socket => {
   socket.on("login", data => {
     if (data.name && data.name.length > 0) {
       users[socket.id] = data.name;
-      console.log(users);
     }
   });
 

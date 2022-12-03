@@ -2,7 +2,11 @@
 <html lang="en">
   <head>
     <script>
-      window.SERVER_DATA = __SERVER_DATA__;
+      try {
+        window.SERVER_DATA = __SERVER_DATA__;
+      } catch {
+        console.log("Running in dev environment.");
+      }
     </script>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />

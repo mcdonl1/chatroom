@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { config } from "./Constants";
 import Home from "./routes/Home";
-import Modal, {setAppElement} from "react-modal";
+import Modal, { setAppElement } from "react-modal";
 
 const socket = io(config.url.SOCKET_URL);
 
@@ -30,14 +30,12 @@ function App() {
   const [loginModalOpen, setLoginModalOpen] = useState(true);
 
 
-  const names = ["Lucas", "Anni", "Lucifer", "Beaver"];
   // TODO add message list sorting by timestamp
   useEffect(() => {
-    
+
 
     socket.on('connect', () => {
       setIsConnected(true);
-      const name = names[Math.floor(Math.random() * names.length)];
       socket.emit("login", { name: "anonymous" });
       setLocalUser({ name: "anonymous" });
     });
@@ -76,10 +74,10 @@ function App() {
 
   const handleLogicBtn = event => {
     if (loginUsername.length === 0) return;
-    socket.emit("login", {name: loginUsername});
+    socket.emit("login", { name: loginUsername });
     setLoginUsername("");
     setLoginModalOpen(false);
-    setLocalUser({name: loginUsername});
+    setLocalUser({ name: loginUsername });
   }
 
   return (
@@ -99,8 +97,8 @@ function App() {
       >
         <div id="login-prompt">
           Enter Username:
-          <input type="text" value={loginUsername} onChange={event => setLoginUsername(event.target.value)}/>
-          <input id="login-btn" onClick={handleLogicBtn} type="submit" value="Login"/>
+          <input type="text" value={loginUsername} onChange={event => setLoginUsername(event.target.value)} />
+          <input id="login-btn" onClick={handleLogicBtn} type="submit" value="Login" />
         </div>
       </Modal>
       <div className="App-body">

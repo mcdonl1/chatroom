@@ -92,6 +92,7 @@ body {
   flex-direction: column;
   justify-content: flex-end;
   padding: 2vmin;
+  overflow-y: scroll;
 }
 
 #login-prompt {
@@ -101,7 +102,8 @@ body {
   align-items: center;
 }
 
-input[type=text], select {
+input[type="text"],
+select {
   padding: 12px 20px;
   margin: 8px;
   border: 1px solid #ccc;
@@ -109,7 +111,7 @@ input[type=text], select {
   box-sizing: border-box;
 }
 
-input[type=submit] {
+input[type="submit"] {
   background-color: #3d579c;
   color: white;
   padding: 14px 20px;
@@ -119,6 +121,6 @@ input[type=submit] {
   cursor: pointer;
 }
 
-input[type=submit]:hover {
+input[type="submit"]:hover {
   background-color: #5e70a1;
 }
