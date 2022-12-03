@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { config } from "./Constants";
 import Home from "./routes/Home";
-import Modal from "react-modal";
+import Modal, {setAppElement} from "react-modal";
 
 const socket = io(config.url.SOCKET_URL);
+
 
 const loginModalStyles = {
   content: {
@@ -18,18 +19,22 @@ const loginModalStyles = {
   },
 };
 
-
+Modal.setAppElement("#root");
 function App() {
 
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [users, setUsers] = useState([]);
   const [localUser, setLocalUser] = useState({ name: "anonymous" })
   const [msgs, setMsgs] = useState([]);
+  const [loginUsername, setLoginUsername] = useState("");
+  const [loginModalOpen, setLoginModalOpen] = useState(true);
 
 
   const names = ["Lucas", "Anni", "Lucifer", "Beaver"];
   // TODO add message list sorting by timestamp
   useEffect(() => {
+    
+
     socket.on('connect', () => {
       setIsConnected(true);
       const name = names[Math.floor(Math.random() * names.length)];
@@ -54,25 +59,27 @@ function App() {
 
   const showUsers = event => {
     // set the user list to display
-    console.log(event);
+    //console.log(event);
   };
 
   const sendMsg = msg => {
     if (msg.length === 0) return;
     socket.emit("message", { content: msg, timestamp: new Date().getTime() })
-    // TODO - add locally to list, send in background
-    // setMsgs(current => {
-    //   let newMsgs = [...current];
-    //   newMsgs.push({ content: msg, sender: localUser.name });
-    //   return newMsgs;
-    // });
   }
 
-  const enterListener = event => {
+  const loginEnterListener = event => {
     if (event.key === "Enter") {
       const btn = document.getElementById("login-btn");
       btn.click();
     }
+  }
+
+  const handleLogicBtn = event => {
+    if (loginUsername.length === 0) return;
+    socket.emit("login", {name: loginUsername});
+    setLoginUsername("");
+    setLoginModalOpen(false);
+    setLocalUser({name: loginUsername});
   }
 
   return (
@@ -81,18 +88,20 @@ function App() {
         <h3>Chatty Chat</h3>
       </header>
       <Modal
-        isOpen={true}
+        isOpen={loginModalOpen}
         style={loginModalStyles}
         onAfterOpen={() => {
-          document.addEventListener("keydown", enterListener);
+          document.addEventListener("keydown", loginEnterListener);
         }}
         onAfterClose={() => {
-          document.removeEventListener("keydown", enterListener);
+          document.removeEventListener("keydown", loginEnterListener);
         }}
       >
-        Pls enter you username
-        <input />
-        <button id="login-btn">Login</button>
+        <div id="login-prompt">
+          Enter Username:
+          <input type="text" value={loginUsername} onChange={event => setLoginUsername(event.target.value)}/>
+          <input id="login-btn" onClick={handleLogicBtn} type="submit" value="Login"/>
+        </div>
       </Modal>
       <div className="App-body">
         <Home sendMsg={sendMsg} user={localUser} messages={msgs} />
