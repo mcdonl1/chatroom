@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useSyncExternalStore } from "react";
 import { io, Socket } from "socket.io-client";
 import { config } from "./Constants";
 import Home from "./routes/Home";
@@ -77,25 +77,25 @@ function App() {
 
 
 
-  const sendMsg = msg => {
+  const sendMsg = useCallback(msg => {
     if (msg.length === 0) return;
     socket.emit("message", { content: msg, timestamp: new Date().getTime() })
-  }
+  }, []);
 
-  function loginEnterListener(event) {
+  const loginEnterListener = useCallback((event) => {
     if (event.key === "Enter") {
       const btn = document.getElementById("login-btn");
       btn.click();
     }
-  }
+  }, []);
 
-  const handleLogicBtn = event => {
+  const handleLoginBtn = useCallback(event => {
     if (loginUsername.length === 0) return;
     socket.emit("login", { name: loginUsername });
     setLoginUsername("");
     setLoginModalOpen(false);
     setLocalUser({ name: loginUsername });
-  }
+  }, []);
 
   return (
     <div className="App">
@@ -106,16 +106,16 @@ function App() {
         isOpen={loginModalOpen}
         style={loginModalStyles}
         onAfterOpen={() => {
-          document.addEventListener("keydown", loginEnterListener, false);
+          document.addEventListener("keydown", loginEnterListener, true);
         }}
         onAfterClose={() => {
-          document.removeEventListener("keydown", loginEnterListener, false);
+          document.removeEventListener("keydown", loginEnterListener, true);
         }}
       >
         <div id="login-prompt">
           Enter Username:
           <input type="text" value={loginUsername} onChange={event => setLoginUsername(event.target.value)} />
-          <input id="login-btn" onClick={handleLogicBtn} type="submit" value="Login" />
+          <input id="login-btn" onClick={handleLoginBtn} type="submit" value="Login" />
         </div>
       </Modal>
       <div className="App-body">

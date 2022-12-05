@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export default function Home({ sendMsg, user, messages }) {
   const [msg, setMsg] = useState("");
 
-  const enterListener = event => {
+  const enterListener = useCallback(event => {
     if (event.key === "Enter") {
       const btn = document.getElementById("msg-send-btn");
       btn.click();
     }
-  }
+  }, []);
+
   useEffect(() => {
-    document.addEventListener("keydown", enterListener, false);
+    document.addEventListener("keydown", enterListener, true);
     return () => {
-      document.removeEventListener("keydown", enterListener, false);
+      document.removeEventListener("keydown", enterListener, true);
     }
   }, []);
 
