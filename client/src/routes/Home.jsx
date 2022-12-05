@@ -11,16 +11,16 @@ export default function Home({ sendMsg, user, messages }) {
     }
   }
   useEffect(() => {
-    document.addEventListener("keydown", enterListener);
+    document.addEventListener("keydown", enterListener, false);
     return () => {
-      document.removeEventListener("keydown", enterListener);
+      document.removeEventListener("keydown", enterListener, false);
     }
   }, []);
 
   return (
     <div className="home">
       <div className="chat-window">
-        <div className="chat-list">
+        <div id="chat-list">
           {messages.map((msg, index) => {
             return (
               <div

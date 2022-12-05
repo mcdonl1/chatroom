@@ -48,6 +48,7 @@ function App() {
         newMsgs.push(msg);
         return newMsgs;
       });
+
     });
 
     socket.on('disconnect', () => {
@@ -55,17 +56,33 @@ function App() {
     });
   }, [setMsgs]);
 
+  useEffect(() => {
+    if (msgs.length === 0) return;
+
+    const chatListDiv = document.getElementById("chat-list");
+
+    if (
+      msgs[msgs.length - 1].sender === localUser.name
+      || chatListDiv.scrollHeight === chatListDiv.scrollTop
+    ) {
+      chatListDiv.scrollTo({ top: chatListDiv.scrollHeight });
+    }
+
+  }, [msgs]);
+
   const showUsers = event => {
     // set the user list to display
     //console.log(event);
   };
+
+
 
   const sendMsg = msg => {
     if (msg.length === 0) return;
     socket.emit("message", { content: msg, timestamp: new Date().getTime() })
   }
 
-  const loginEnterListener = event => {
+  function loginEnterListener(event) {
     if (event.key === "Enter") {
       const btn = document.getElementById("login-btn");
       btn.click();
@@ -89,10 +106,10 @@ function App() {
         isOpen={loginModalOpen}
         style={loginModalStyles}
         onAfterOpen={() => {
-          document.addEventListener("keydown", loginEnterListener);
+          document.addEventListener("keydown", loginEnterListener, false);
         }}
         onAfterClose={() => {
-          document.removeEventListener("keydown", loginEnterListener);
+          document.removeEventListener("keydown", loginEnterListener, false);
         }}
       >
         <div id="login-prompt">

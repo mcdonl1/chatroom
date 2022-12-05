@@ -3,18 +3,16 @@ const cors = require("cors");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const { SocketAddress } = require("net");
-const { readFile, writeFile } = require("fs");
+const { readFileSync, writeFileSync } = require("fs");
 
-readFile("./.config.json", (err, res) => {
-  let SERVER_DATA = res.toString();
-  readFile("./public/index.html", (err, res) => {
-    let newContents = res.toString().replace("__SERVER_DATA__", SERVER_DATA);
-    writeFile("./public/index.html", newContents, (err, data) => {
-      if (err) console.log(err);
-    });
-    app.use(express.static("./public"));
-  });
-});
+let SERVER_DATA = readFileSync("./.config.json").toString();
+let newContents = readFileSync("./public/index.html").toString().replace("__SERVER_DATA__", SERVER_DATA);
+
+try {
+  writeFileSync("./public/index.html", newContents);
+} catch (error) {
+  console.log("Cannot serve contents of public:", error);
+}
 
 const corsOrigins = ["http://localhost:3000"];
 var corsOptions = {
@@ -33,8 +31,10 @@ const io = new Server(httpServer, {
 });
 
 const port = process.env.PORT || 5000;
-let SERVER_DATA = {};
-app.use(cors());
+
+// Use middlewares
+app.use(cors()); // Handle cors for dev
+app.use(express.static("./public")); // Serve client on GET /
 
 // This displays message that the server running and listening to specified port
 httpServer.listen(port, () => console.log(`Listening on port ${port}`));
@@ -43,6 +43,10 @@ const users = {};
 
 msgs = [];
 
+const testMsg = { sender: "Test", content: "Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test textTest text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text\nTest text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test textTest text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text\nTest text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test textTest text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text Test text\n"};
+for (let i = 0; i < 10; i++) {
+  msgs.push(testMsg);
+}
 // Socket setup
 io.on("connection", socket => {
   socket.on("message", data => {
