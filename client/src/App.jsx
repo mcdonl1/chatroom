@@ -80,7 +80,7 @@ function App() {
   const sendMsg = useCallback(msg => {
     if (msg.length === 0) return;
     socket.emit("message", { content: msg, timestamp: new Date().getTime() })
-  }, []);
+  }, [socket]);
 
   const loginEnterListener = useCallback((event) => {
     if (event.key === "Enter") {
@@ -95,7 +95,7 @@ function App() {
     setLoginUsername("");
     setLoginModalOpen(false);
     setLocalUser({ name: loginUsername });
-  }, []);
+  }, [loginUsername, socket]);
 
   return (
     <div className="App">
