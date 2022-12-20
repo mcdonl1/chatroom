@@ -6,7 +6,9 @@ const { SocketAddress } = require("net");
 const { readFileSync, writeFileSync } = require("fs");
 
 let SERVER_DATA = readFileSync("./.config.json").toString();
-let newContents = readFileSync("./public/index.html").toString().replace("__SERVER_DATA__", SERVER_DATA);
+let newContents = readFileSync("./public/index.html")
+  .toString()
+  .replace("__SERVER_DATA__", SERVER_DATA);
 
 try {
   writeFileSync("./public/index.html", newContents);
@@ -14,7 +16,7 @@ try {
   console.log("Cannot serve contents of public:", error);
 }
 
-const corsOrigins = ["http://localhost:3000"];
+const corsOrigins = ["http://localhost:3000", "https://chatty-chat.fly.dev"];
 var corsOptions = {
   origins: corsOrigins,
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
