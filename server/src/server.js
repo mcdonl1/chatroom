@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
-const { SocketAddress } = require("net");
 const { readFileSync, writeFileSync } = require("fs");
 
 let SERVER_DATA = readFileSync("./.config.json").toString();
